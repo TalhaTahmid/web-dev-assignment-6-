@@ -266,3 +266,61 @@ document.addEventListener("keydown", function (e) {
 });
 
 
+   //Cart
+
+function addToCart(item) {
+  cart.push(item);
+  total += item.price || 0;
+  updateCart();
+}
+
+function updateCart() {
+  cartItemsContainer.innerHTML = "";
+  cart.forEach(function (item, index) {
+    cartItemsContainer.innerHTML +=
+      '<li class="flex justify-between items-center bg-white p-2 rounded shadow">' +
+      "<span>" +
+      item.name +
+      " ৳" +
+      (item.price || 0) +
+      "</span>" +
+      '<button data-index="' +
+      index +
+      '" class="remove-item text-red-500 font-bold">×</button>' +
+      "</li>";
+  });
+  cartTotal.textContent = "৳" + total;
+}
+
+cartItemsContainer.addEventListener("click", function (e) {
+  if (e.target.classList.contains("remove-item")) {
+    var index = parseInt(e.target.getAttribute("data-index"), 10);
+    total -= cart[index].price || 0;
+    cart.splice(index, 1);
+    updateCart();
+  }
+});
+
+
+function showLoading() {
+  productList.innerHTML =
+    '<div class="flex justify-center items-center py-10">' +
+    '<div class="animate-spin rounded-full h-12 w-12 border-t-4 border-green-600 border-solid"></div>' +
+    "</div>";
+}
+function showError(type) {
+  productList.innerHTML =
+    '<div class="bg-red-500 p-3 rounded">Error loading ' + type + "!</div>";
+}
+function showEmptyMessage() {
+  productList.innerHTML =
+    '<div class="bg-orange-500 p-3 rounded">No items found</div>';
+}
+function showToast(msg) {
+  console.warn(msg);
+}
+// Initial Load
+loadCategories();
+loadAllPlants();
+
+
