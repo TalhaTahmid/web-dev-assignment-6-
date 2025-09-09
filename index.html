@@ -57,6 +57,24 @@
     </aside>
   </section>
 
+  <!-- Modal -->
+  <div id="tree-modal" class="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center hidden p-4">
+    <div class="bg-white p-6 rounded-lg w-full max-w-lg relative">
+      <button id="close-modal" class="absolute top-2 right-2 text-gray-600 text-xl" aria-label="Close">&times;</button>
+
+      <h2 id="modal-name" class="text-2xl font-bold mb-3"></h2>
+      <img id="modal-image" src="" alt="Tree" class="w-full h-48 sm:h-60 object-cover rounded mb-4">
+      <p class="mb-1"><span class="font-semibold">Category:</span> <span id="modal-category"></span></p>
+      <p class="mb-3"><span class="font-semibold">Price:</span> ৳<span id="modal-price"></span></p>
+      <p class="text-gray-700"><span class="font-semibold">Description:</span> <span id="modal-description"></span></p>
+
+      <div class="mt-6 flex justify-end">
+        <button id="bottom-close" class="px-4 py-2 rounded-md bg-gray-100 text-gray-700 hover:bg-gray-200">Close</button>
+      </div>
+    </div>
+  </div>
+
+  
 
   <script src="script.js"></script>
 </body>

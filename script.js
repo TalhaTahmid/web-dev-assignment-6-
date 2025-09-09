@@ -87,3 +87,87 @@ function showCategories(categories) {
   }
 }
 
+
+   //Load All Plants
+
+function loadAllPlants() {
+  showLoading();
+  fetch(API_BASE + "/plants")
+    .then(function (res) {
+      return res.json();
+    })
+    .then(function (data) {
+      showPlants((data && data.plants) || []);
+    })
+    .catch(function () {
+      showError("plants");
+    });
+}
+
+
+   //Load Plants by Category
+
+function loadPlantsByCategory(id) {
+  showLoading();
+  fetch(API_BASE + "/category/" + id)
+    .then(function (res) {
+      return res.json();
+    })
+    .then(function (data) {
+      var plants = (data && data.plants) || [];
+      if (plants.length) showPlants(plants);
+      else showEmptyMessage();
+    })
+    .catch(function () {
+      showError("plants");
+    });
+}
+
+   //Show Plants
+function showPlants(plants) {
+  productList.innerHTML = "";
+  plants.forEach(function (tree) {
+    var id = getId(tree);
+    var name = getName(tree);
+    var img = getImg(tree);
+    var cat = getCat(tree);
+    var price = getPrice(tree);
+    var short = (getDesc(tree) || "").substring(0, 80);
+
+    productList.innerHTML +=
+      '<div class="bg-white p-4 rounded-xl shadow">' +
+      '<img data-id="' +
+      (id || "") +
+      '" src="' +
+      img +
+      '" alt="' +
+      name +
+      '" class="open-detail w-full h-32 object-cover rounded mb-4">' +
+      '<h3 data-id="' +
+      (id || "") +
+      '" class="open-detail font-semibold text-green-700 cursor-pointer hover:underline">' +
+      name +
+      "</h3>" +
+      '<p class="text-sm text-gray-600">' +
+      (short ? short + "..." : "") +
+      "</p>" +
+      '<span class="text-xs inline-block mt-2 px-2 py-1 bg-green-100 text-green-600 rounded">' +
+      cat +
+      "</span>" +
+      '<div class="flex justify-between items-center mt-4">' +
+      '<span class="font-semibold">৳' +
+      price +
+      "</span>" +
+      '<button data-id="' +
+      (id || "") +
+      '" data-name="' +
+      name +
+      '" data-price="' +
+      price +
+      '" class="add-to-cart bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700">Add to Cart</button>' +
+      "</div>" +
+      "</div>";
+  });
+
+  if (!plants.length) showEmptyMessage();
+}
