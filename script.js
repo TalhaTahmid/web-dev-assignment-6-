@@ -171,3 +171,98 @@ function showPlants(plants) {
 
   if (!plants.length) showEmptyMessage();
 }
+
+  // Event Delegation
+if (!productList._bound) {
+  productList.addEventListener("click", function (e) {
+    if (e.target.classList.contains("open-detail")) {
+      var id = e.target.getAttribute("data-id");
+      if (!id) {
+        showToast("Missing plant id for details.");
+        return;
+      }
+      handleViewDetails(id);
+    }
+
+    if (e.target.classList.contains("add-to-cart")) {
+      var item = {
+        id: e.target.getAttribute("data-id") || null,
+        name: e.target.getAttribute("data-name") || "Unnamed",
+        price: Number(e.target.getAttribute("data-price")) || 0,
+      };
+      addToCart(item);
+    }
+  });
+  productList._bound = true;
+}
+
+/* =========================
+   Load Plant Detail (Modal)
+========================= */
+function handleViewDetails(id) {
+  modal.classList.remove("hidden");
+  modalName.textContent = "";
+  modalDescription.textContent =
+    '<div class="flex justify-center items-center py-10">' +
+    '<div class="animate-spin rounded-full h-10 w-10 border-t-4 border-green-600 border-solid"></div>' +
+    "</div>";
+  modalCategory.textContent = "";
+  modalPrice.textContent = "";
+  modalImage.src = "";
+
+  fetch(API_BASE + "/plant/" + id)
+    .then(function (res) {
+      return res.json();
+    })
+    .then(function (data) {
+      var plant = pickPlantPayload(data);
+      var norm = {
+        id: getId(plant),
+        name: getName(plant),
+        image: getImg(plant),
+        category: getCat(plant),
+        price: getPrice(plant),
+        desc: getDesc(plant),
+      };
+
+      currentPlant = { id: norm.id, name: norm.name, price: norm.price };
+
+      modalName.textContent = norm.name || "Unnamed";
+      modalImage.src = norm.image || "https://via.placeholder.com/300x200?text=No+Image";
+      modalCategory.textContent = norm.category || "Tree";
+      modalPrice.textContent = "৳" + (norm.price || 0);
+      modalDescription.textContent = norm.desc || "No description available.";
+    })
+    .catch(function () {
+      modalName.textContent = "Error loading details";
+    });
+}
+
+// Modal Add-to-Cart
+if (modalAddBtn) {
+  modalAddBtn.addEventListener("click", function () {
+    if (currentPlant) {
+      addToCart(currentPlant);
+      closeModal();
+    }
+  });
+}
+
+/* =========================
+   Modal Close
+========================= */
+function closeModal() {
+  if (modal) modal.classList.add("hidden");
+}
+if (closeModalBtn) closeModalBtn.addEventListener("click", closeModal);
+if (bottomCloseBtn) bottomCloseBtn.addEventListener("click", closeModal);
+if (modal) {
+  modal.addEventListener("click", function (e) {
+    if (e.target === modal) closeModal();
+  });
+}
+document.addEventListener("keydown", function (e) {
+  if (e.key === "Escape") closeModal();
+});
+
+
