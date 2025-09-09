@@ -46,3 +46,44 @@ function pickPlantPayload(data) {
   return (data && (data.plant || data.plants)) || {};
 }
 
+//Load Categories
+ 
+function loadCategories() {
+  fetch(API_BASE + "/categories")
+    .then(function (res) {
+      return res.json();
+    })
+    .then(function (data) {
+      var categories = (data && data.categories) || [];
+      showCategories(categories);
+    })
+    .catch(function () {
+      showError("categories");
+    });
+}
+
+function showCategories(categories) {
+  categoryList.innerHTML =
+    '<li><button id="all-trees" class="w-full text-left px-4 py-2 rounded-md bg-green-600 text-white">All Trees</button></li>';
+
+  categories.forEach(function (cat) {
+    var catId = cat.id || cat.category_id || cat.cat_id || "";
+    categoryList.innerHTML +=
+      '<li><button data-id="' +
+      catId +
+      '" class="w-full text-left px-4 py-2 rounded-md hover:bg-green-100">' +
+      getCat(cat) +
+      "</button></li>";
+  });
+
+  if (!categoryList._bound) {
+    categoryList.addEventListener("click", function (e) {
+      if (e.target.tagName !== "BUTTON") return;
+      var id = e.target.getAttribute("data-id");
+      if (id) loadPlantsByCategory(id);
+      else loadAllPlants();
+    });
+    categoryList._bound = true;
+  }
+}
+
